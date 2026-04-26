@@ -1,13 +1,13 @@
 package com.order_service.service.impl;
 
-import com.order_service.dto.Orderdto;
+import com.order_service.dto.OrderDto;
 
 import java.util.List;
 
 public interface OrderServiceImpl {
-    Orderdto placeOrder(Orderdto order);
-    List<Orderdto> getAllOrders();
-    Orderdto getOrderById(Long id);
-    Orderdto updateOrder(Long id, Orderdto order);
+    OrderDto placeOrder(OrderDto order);
+    List<OrderDto> getAllOrders();
+    OrderDto getOrderById(Long id);
+    OrderDto updateOrder(Long id, OrderDto order);
     void deleteOrder(Long id);
 }

@@ -1,6 +1,6 @@
 package com.order_service.controller;
 
-import com.order_service.dto.Orderdto;
+import com.order_service.dto.OrderDto;
 import com.order_service.payload.response.APIResponse;
 import com.order_service.service.OrderService;
 import jakarta.validation.Valid;
@@ -21,31 +21,31 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<APIResponse<Orderdto>> createOrder(@Valid @RequestBody Orderdto orderDto) {
+    public ResponseEntity<APIResponse<OrderDto>> createOrder(@Valid @RequestBody OrderDto orderDto) {
         log.info("Creating new order");
-        Orderdto createdOrder = orderService.placeOrder(orderDto);
+        OrderDto createdOrder = orderService.placeOrder(orderDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new APIResponse<>(HttpStatus.CREATED.value(), "Order created successfully", createdOrder));
     }
 
     @GetMapping
-    public ResponseEntity<APIResponse<List<Orderdto>>> getAllOrders() {
+    public ResponseEntity<APIResponse<List<OrderDto>>> getAllOrders() {
         log.info("Fetching all orders");
-        List<Orderdto> orders = orderService.getAllOrders();
+        List<OrderDto> orders = orderService.getAllOrders();
         return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Orders fetched successfully", orders));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<APIResponse<Orderdto>> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<APIResponse<OrderDto>> getOrderById(@PathVariable Long id) {
         log.info("Fetching order with id: {}", id);
-        Orderdto order = orderService.getOrderById(id);
+        OrderDto order = orderService.getOrderById(id);
         return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Order fetched successfully", order));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<APIResponse<Orderdto>> updateOrder(@PathVariable Long id, @Valid @RequestBody Orderdto orderDto) {
+    public ResponseEntity<APIResponse<OrderDto>> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderDto orderDto) {
         log.info("Updating order with id: {}", id);
-        Orderdto updatedOrder = orderService.updateOrder(id, orderDto);
+        OrderDto updatedOrder = orderService.updateOrder(id, orderDto);
         return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Order updated successfully", updatedOrder));
     }
 

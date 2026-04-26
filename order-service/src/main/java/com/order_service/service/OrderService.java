@@ -1,6 +1,6 @@
 package com.order_service.service;
 
-import com.order_service.dto.Orderdto;
+import com.order_service.dto.OrderDto;
 import com.order_service.entity.Order;
 import com.order_service.enums.OrderStatus;
 import com.order_service.exception.OrderException;
@@ -23,7 +23,12 @@ public class OrderService implements OrderServiceImpl {
     private final ModelMapper modelMapper;
 
     @Override
-    public Orderdto placeOrder(Orderdto orderDto) {
+    public OrderDto placeOrder(OrderDto orderDto) {
+
+        if (orderRepository.existsByUserIdAndProductIdAndStatus(orderDto.getUserId(), orderDto.getProductId(), OrderStatus.PENDING)) {
+            throw new OrderException("Duplicate order: User already has a pending order for this product", 400);
+        }
+
         Order order = Order.builder()
                 .userId(orderDto.getUserId())
                 .productId(orderDto.getProductId())
@@ -40,25 +45,25 @@ public class OrderService implements OrderServiceImpl {
                 .build();
 
         Order savedOrder = orderRepository.save(order);
-        return modelMapper.map(savedOrder, Orderdto.class);
+        return modelMapper.map(savedOrder, OrderDto.class);
     }
 
     @Override
-    public List<Orderdto> getAllOrders() {
+    public List<OrderDto> getAllOrders() {
         return orderRepository.findAll().stream()
-                .map(order -> modelMapper.map(order, Orderdto.class))
+                .map(order -> modelMapper.map(order, OrderDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Orderdto getOrderById(Long id) {
+    public OrderDto getOrderById(Long id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderException("Order not found with id: " + id, 404));
-        return modelMapper.map(order, Orderdto.class);
+        return modelMapper.map(order, OrderDto.class);
     }
 
     @Override
-    public Orderdto updateOrder(Long id, Orderdto orderDto) {
+    public OrderDto updateOrder(Long id, OrderDto orderDto) {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderException("Order not found with id: " + id, 404));
 
@@ -79,7 +84,7 @@ public class OrderService implements OrderServiceImpl {
                 .build();
 
         Order saved = orderRepository.save(updatedOrder);
-        return modelMapper.map(saved, Orderdto.class);
+        return modelMapper.map(saved, OrderDto.class);
     }
 
     @Override
