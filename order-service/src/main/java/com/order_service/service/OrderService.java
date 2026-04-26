@@ -24,6 +24,11 @@ public class OrderService implements OrderServiceImpl {
 
     @Override
     public OrderDto placeOrder(OrderDto orderDto) {
+
+        if (orderRepository.existsByUserIdAndProductIdAndStatus(orderDto.getUserId(), orderDto.getProductId(), OrderStatus.PENDING)) {
+            throw new OrderException("Duplicate order: User already has a pending order for this product", 400);
+        }
+
         Order order = Order.builder()
                 .userId(orderDto.getUserId())
                 .productId(orderDto.getProductId())
