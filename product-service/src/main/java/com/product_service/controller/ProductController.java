@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<ProductDto>> createProduct(@Valid @RequestBody ProductDto productDto) {
         log.info("Creating new product: {}", productDto.getProductName());
         ProductDto createdProduct = productService.createProduct(productDto);
@@ -29,6 +31,7 @@ public class ProductController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<ProductDto>>> getAllProducts() {
         log.info("Fetching all products");
         List<ProductDto> products = productService.getAllProducts();
@@ -36,6 +39,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<ProductDto>> getProductById(@PathVariable Long id) {
         log.info("Fetching product with id: {}", id);
         ProductDto product = productService.getProductById(id);
@@ -43,6 +47,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<ProductDto>> updateProduct(@PathVariable Long id, @Valid @RequestBody ProductDto productDto) {
         log.info("Updating product with id: {}", id);
         ProductDto updatedProduct = productService.updateProduct(id, productDto);
@@ -50,6 +55,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<Void>> deleteProduct(@PathVariable Long id) {
         log.info("Deleting product with id: {}", id);
         productService.deleteProduct(id);

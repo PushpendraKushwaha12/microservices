@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<OrderDto>> createOrder(@Valid @RequestBody OrderDto orderDto) {
         log.info("Creating new order");
         OrderDto createdOrder = orderService.placeOrder(orderDto);
@@ -29,6 +31,7 @@ public class OrderController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<OrderDto>>> getAllOrders() {
         log.info("Fetching all orders");
         List<OrderDto> orders = orderService.getAllOrders();
@@ -36,6 +39,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<OrderDto>> getOrderById(@PathVariable Long id) {
         log.info("Fetching order with id: {}", id);
         OrderDto order = orderService.getOrderById(id);
@@ -43,6 +47,7 @@ public class OrderController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<OrderDto>> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderDto orderDto) {
         log.info("Updating order with id: {}", id);
         OrderDto updatedOrder = orderService.updateOrder(id, orderDto);
@@ -50,6 +55,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<Void>> deleteOrder(@PathVariable Long id) {
         log.info("Deleting order with id: {}", id);
         orderService.deleteOrder(id);
