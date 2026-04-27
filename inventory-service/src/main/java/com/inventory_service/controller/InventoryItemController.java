@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class InventoryItemController {
     private final InventoryItemService inventoryItemService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<InventoryItemDto>> createInventoryItem(@Valid @RequestBody InventoryItemDto inventoryItemDto) {
         log.info("Creating new inventory item for product: {}", inventoryItemDto.getProductName());
         InventoryItemDto createdItem = inventoryItemService.createInventoryItem(inventoryItemDto);
@@ -29,6 +31,7 @@ public class InventoryItemController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<InventoryItemDto>>> getAllInventoryItems() {
         log.info("Fetching all inventory items");
         List<InventoryItemDto> items = inventoryItemService.getAllInventoryItems();
@@ -36,6 +39,7 @@ public class InventoryItemController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<InventoryItemDto>> getInventoryItemById(@PathVariable Long id) {
         log.info("Fetching inventory item with id: {}", id);
         InventoryItemDto item = inventoryItemService.getInventoryItemById(id);
@@ -43,6 +47,7 @@ public class InventoryItemController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<InventoryItemDto>> updateInventoryItem(@PathVariable Long id, @Valid @RequestBody InventoryItemDto inventoryItemDto) {
         log.info("Updating inventory item with id: {}", id);
         InventoryItemDto updatedItem = inventoryItemService.updateInventoryItem(id, inventoryItemDto);
@@ -50,6 +55,7 @@ public class InventoryItemController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<Void>> deleteInventoryItem(@PathVariable Long id) {
         log.info("Deleting inventory item with id: {}", id);
         inventoryItemService.deleteInventoryItem(id);
@@ -58,6 +64,7 @@ public class InventoryItemController {
     }
 
     @GetMapping("/low-stock")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<InventoryItemDto>>> getLowStockItems() {
         log.info("Fetching low stock items");
         List<InventoryItemDto> items = inventoryItemService.getLowStockItems();
@@ -65,6 +72,7 @@ public class InventoryItemController {
     }
 
     @GetMapping("/out-of-stock")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<InventoryItemDto>>> getOutOfStockItems() {
         log.info("Fetching out of stock items");
         List<InventoryItemDto> items = inventoryItemService.getOutOfStockItems();
@@ -72,6 +80,7 @@ public class InventoryItemController {
     }
 
     @GetMapping("/search")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<InventoryItemDto>>> searchInventoryItems(@RequestParam String keyword) {
         log.info("Searching inventory items with keyword: {}", keyword);
         List<InventoryItemDto> items = inventoryItemService.searchInventoryItems(keyword);
@@ -79,6 +88,7 @@ public class InventoryItemController {
     }
 
     @GetMapping("/product/{productId}/total-quantity")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<Long>> getTotalQuantityByProductId(@PathVariable Long productId) {
         log.info("Getting total quantity for product id: {}", productId);
         Long totalQuantity = inventoryItemService.getTotalQuantityByProductId(productId);
@@ -86,6 +96,7 @@ public class InventoryItemController {
     }
 
     @GetMapping("/product/{productId}/available-quantity")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<Long>> getAvailableQuantityByProductId(@PathVariable Long productId) {
         log.info("Getting available quantity for product id: {}", productId);
         Long availableQuantity = inventoryItemService.getAvailableQuantityByProductId(productId);

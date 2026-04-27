@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +24,7 @@ public class StockMovementController {
     private final StockMovementService stockMovementService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<StockMovementDto>> createStockMovement(@Valid @RequestBody StockMovementDto stockMovementDto) {
         log.info("Creating new stock movement for inventory item: {}", stockMovementDto.getInventoryItemId());
         StockMovementDto createdMovement = stockMovementService.createStockMovement(stockMovementDto);
@@ -31,6 +33,7 @@ public class StockMovementController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<StockMovementDto>>> getAllStockMovements() {
         log.info("Fetching all stock movements");
         List<StockMovementDto> movements = stockMovementService.getAllStockMovements();
@@ -38,6 +41,7 @@ public class StockMovementController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<StockMovementDto>> getStockMovementById(@PathVariable Long id) {
         log.info("Fetching stock movement with id: {}", id);
         StockMovementDto movement = stockMovementService.getStockMovementById(id);
@@ -45,6 +49,7 @@ public class StockMovementController {
     }
 
     @GetMapping("/item/{inventoryItemId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<StockMovementDto>>> getMovementsByInventoryItemId(@PathVariable Long inventoryItemId) {
         log.info("Fetching stock movements for inventory item: {}", inventoryItemId);
         List<StockMovementDto> movements = stockMovementService.getMovementsByInventoryItemId(inventoryItemId);
@@ -52,6 +57,7 @@ public class StockMovementController {
     }
 
     @GetMapping("/date-range")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<StockMovementDto>>> getMovementsBetweenDates(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
@@ -61,6 +67,7 @@ public class StockMovementController {
     }
 
     @GetMapping("/pending-approvals")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<StockMovementDto>>> getPendingApprovals() {
         log.info("Fetching pending movement approvals");
         List<StockMovementDto> movements = stockMovementService.getPendingApprovals();
@@ -68,6 +75,7 @@ public class StockMovementController {
     }
 
     @PutMapping("/{id}/approve")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<StockMovementDto>> approveMovement(@PathVariable Long id, @RequestParam String approvedBy) {
         log.info("Approving stock movement with id: {} by {}", id, approvedBy);
         StockMovementDto approvedMovement = stockMovementService.approveMovement(id, approvedBy);
@@ -75,6 +83,7 @@ public class StockMovementController {
     }
 
     @PutMapping("/{id}/reverse")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<StockMovementDto>> reverseMovement(@PathVariable Long id, @RequestParam String reversedBy, @RequestParam String reason) {
         log.info("Reversing stock movement with id: {} by {}", id, reversedBy);
         StockMovementDto reversedMovement = stockMovementService.reverseMovement(id, reversedBy, reason);
