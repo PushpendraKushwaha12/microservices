@@ -24,16 +24,13 @@ public class OrderController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<OrderDto>> createOrder(@Valid @RequestBody OrderDto orderDto) {
-        log.info("Creating new order");
         OrderDto createdOrder = orderService.placeOrder(orderDto);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new APIResponse<>(HttpStatus.CREATED.value(), "Order created successfully", createdOrder));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new APIResponse<>(HttpStatus.CREATED.value(), "Order created successfully", createdOrder));
     }
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<OrderDto>>> getAllOrders() {
-        log.info("Fetching all orders");
         List<OrderDto> orders = orderService.getAllOrders();
         return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Orders fetched successfully", orders));
     }
@@ -41,7 +38,6 @@ public class OrderController {
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<OrderDto>> getOrderById(@PathVariable Long id) {
-        log.info("Fetching order with id: {}", id);
         OrderDto order = orderService.getOrderById(id);
         return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Order fetched successfully", order));
     }
@@ -49,7 +45,6 @@ public class OrderController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<OrderDto>> updateOrder(@PathVariable Long id, @Valid @RequestBody OrderDto orderDto) {
-        log.info("Updating order with id: {}", id);
         OrderDto updatedOrder = orderService.updateOrder(id, orderDto);
         return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Order updated successfully", updatedOrder));
     }
@@ -57,9 +52,7 @@ public class OrderController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<Void>> deleteOrder(@PathVariable Long id) {
-        log.info("Deleting order with id: {}", id);
         orderService.deleteOrder(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT)
-                .body(new APIResponse<>(HttpStatus.NO_CONTENT.value(), "Order deleted successfully"));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new APIResponse<>(HttpStatus.NO_CONTENT.value(), "Order deleted successfully"));
     }
 }
