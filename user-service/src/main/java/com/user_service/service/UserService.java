@@ -30,7 +30,9 @@ public class UserService {
         }
         User user = modelMapper.map(registrationDto, User.class);
         user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
-        user.setRole("USER");
+        // Use role from DTO if provided, otherwise default to USER
+        String role = registrationDto.getRole();
+        user.setRole(role != null && !role.isBlank() ? role : "USER");
         User savedUser = userRepository.save(user);
         return modelMapper.map(savedUser, UserDto.class);
     }
@@ -51,8 +53,12 @@ public class UserService {
                 .orElseThrow(() -> new UserException("User not found", 404));
         user.setName(registrationDto.getName());
         user.setEmail(registrationDto.getEmail());
-        user.setAddress(registrationDto.getAddress());
-        user.setPhoneNumber(registrationDto.getPhoneNumber());
+//        user.setAddress(registrationDto.getAddress());
+//        user.setPhoneNumber(registrationDto.getPhoneNumber());
+        // Update role if provided and not blank
+        if (registrationDto.getRole() != null && !registrationDto.getRole().isBlank()) {
+            user.setRole(registrationDto.getRole());
+        }
         if (registrationDto.getPassword() != null && !registrationDto.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
         }

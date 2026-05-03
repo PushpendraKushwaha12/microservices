@@ -24,4 +24,7 @@ public class UserRegistrationDto {
 
     private String address;
     private String phoneNumber;
+
+    @NotBlank(message = "Role is required")
+    private String role;
 }

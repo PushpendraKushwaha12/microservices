@@ -49,13 +49,6 @@ public class UserController {
         return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Login successful", resp));
     }
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<APIResponse<UserDto>> createUser(@Valid @RequestBody UserRegistrationDto userDto) {
-        UserDto createdUser = userService.createUser(userDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new APIResponse<>(HttpStatus.CREATED.value(), "User created successfully", createdUser));
-    }
-
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<APIResponse<List<UserDto>>> getAllUsers() {
