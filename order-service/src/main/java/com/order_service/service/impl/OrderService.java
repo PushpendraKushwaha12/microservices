@@ -4,7 +4,7 @@ import com.order_service.dto.OrderDto;
 
 import java.util.List;
 
-public interface OrderServiceImpl {
+public interface OrderService {
     OrderDto placeOrder(OrderDto order);
     List<OrderDto> getAllOrders();
     OrderDto getOrderById(Long id);

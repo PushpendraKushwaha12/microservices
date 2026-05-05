@@ -2,7 +2,7 @@ package com.order_service.controller;
 
 import com.order_service.dto.OrderDto;
 import com.order_service.payload.response.APIResponse;
-import com.order_service.service.OrderService;
+import com.order_service.service.impl.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

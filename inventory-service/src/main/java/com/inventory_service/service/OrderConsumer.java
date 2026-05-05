@@ -6,7 +6,6 @@ import com.inventory_service.exception.InventoryException;
 import com.inventory_service.repository.InventoryItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +17,6 @@ public class OrderConsumer {
 
     private final InventoryItemRepository inventoryItemRepository;
 
-    @KafkaListener(topics = "${order.topic.name}", groupId = "${spring.kafka.consumer.group-id}")
     public void consumeOrderEvent(OrderEvent orderEvent) {
         log.info("Received order event: {}", orderEvent);
 
