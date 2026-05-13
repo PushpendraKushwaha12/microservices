@@ -10,9 +10,4 @@ public interface InventoryItemServiceImpl {
     InventoryItemDto getInventoryItemById(Long id);
     InventoryItemDto updateInventoryItem(Long id, InventoryItemDto inventoryItemDto);
     void deleteInventoryItem(Long id);
-    List<InventoryItemDto> getLowStockItems();
-    List<InventoryItemDto> getOutOfStockItems();
-    List<InventoryItemDto> searchInventoryItems(String keyword);
-    Long getTotalQuantityByProductId(Long productId);
-    Long getAvailableQuantityByProductId(Long productId);
 }

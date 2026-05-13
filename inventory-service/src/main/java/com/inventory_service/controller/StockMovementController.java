@@ -24,7 +24,7 @@ public class StockMovementController {
     private final StockMovementService stockMovementService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<StockMovementDto>> createStockMovement(@Valid @RequestBody StockMovementDto stockMovementDto) {
         log.info("Creating new stock movement for inventory item: {}", stockMovementDto.getInventoryItemId());
         StockMovementDto createdMovement = stockMovementService.createStockMovement(stockMovementDto);
@@ -54,39 +54,5 @@ public class StockMovementController {
         log.info("Fetching stock movements for inventory item: {}", inventoryItemId);
         List<StockMovementDto> movements = stockMovementService.getMovementsByInventoryItemId(inventoryItemId);
         return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Stock movements fetched successfully", movements));
-    }
-
-    @GetMapping("/date-range")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<APIResponse<List<StockMovementDto>>> getMovementsBetweenDates(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-        log.info("Fetching stock movements between {} and {}", startDate, endDate);
-        List<StockMovementDto> movements = stockMovementService.getMovementsBetweenDates(startDate, endDate);
-        return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Stock movements fetched successfully", movements));
-    }
-
-    @GetMapping("/pending-approvals")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<APIResponse<List<StockMovementDto>>> getPendingApprovals() {
-        log.info("Fetching pending movement approvals");
-        List<StockMovementDto> movements = stockMovementService.getPendingApprovals();
-        return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Pending approvals fetched successfully", movements));
-    }
-
-    @PutMapping("/{id}/approve")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<APIResponse<StockMovementDto>> approveMovement(@PathVariable Long id, @RequestParam String approvedBy) {
-        log.info("Approving stock movement with id: {} by {}", id, approvedBy);
-        StockMovementDto approvedMovement = stockMovementService.approveMovement(id, approvedBy);
-        return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Stock movement approved successfully", approvedMovement));
-    }
-
-    @PutMapping("/{id}/reverse")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<APIResponse<StockMovementDto>> reverseMovement(@PathVariable Long id, @RequestParam String reversedBy, @RequestParam String reason) {
-        log.info("Reversing stock movement with id: {} by {}", id, reversedBy);
-        StockMovementDto reversedMovement = stockMovementService.reverseMovement(id, reversedBy, reason);
-        return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Stock movement reversed successfully", reversedMovement));
     }
 }

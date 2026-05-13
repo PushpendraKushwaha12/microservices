@@ -1,7 +1,10 @@
 package com.inventory_service.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum MovementType {
-    INBOUND("Inbound"),
+    IN("In"),
     OUTBOUND("Outbound"),
     ADJUSTMENT("Adjustment"),
     RETURN("Return"),
@@ -13,7 +16,4 @@ public enum MovementType {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
 }

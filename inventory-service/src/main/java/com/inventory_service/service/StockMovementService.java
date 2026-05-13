@@ -25,7 +25,6 @@ public class StockMovementService implements StockMovementServiceImpl {
         StockMovement stockMovement = modelMapper.map(stockMovementDto, StockMovement.class);
         stockMovement.setCreatedDate(LocalDateTime.now());
 
-        // Calculate total value if unit cost and quantity are provided
         if (stockMovement.getUnitCost() != null && stockMovement.getQuantity() != 0) {
             stockMovement.setTotalValue(stockMovement.getUnitCost().multiply(
                 java.math.BigDecimal.valueOf(Math.abs(stockMovement.getQuantity()))));
@@ -56,48 +55,4 @@ public class StockMovementService implements StockMovementServiceImpl {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<StockMovementDto> getMovementsBetweenDates(LocalDateTime startDate, LocalDateTime endDate) {
-        return stockMovementRepository.findMovementsBetweenDates(startDate, endDate).stream()
-                .map(movement -> modelMapper.map(movement, StockMovementDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<StockMovementDto> getPendingApprovals() {
-        return stockMovementRepository.findPendingApprovals().stream()
-                .map(movement -> modelMapper.map(movement, StockMovementDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public StockMovementDto approveMovement(Long id, String approvedBy) {
-        StockMovement stockMovement = stockMovementRepository.findById(id)
-                .orElseThrow(() -> new InventoryException("Stock movement not found with id: " + id, 404));
-
-        stockMovement.setApprovalStatus("APPROVED");
-        stockMovement.setApprovedBy(approvedBy);
-        stockMovement.setApprovedDate(LocalDateTime.now());
-
-        StockMovement savedMovement = stockMovementRepository.save(stockMovement);
-        return modelMapper.map(savedMovement, StockMovementDto.class);
-    }
-
-    @Override
-    public StockMovementDto reverseMovement(Long id, String reversedBy, String reason) {
-        StockMovement stockMovement = stockMovementRepository.findById(id)
-                .orElseThrow(() -> new InventoryException("Stock movement not found with id: " + id, 404));
-
-        if (stockMovement.isReversed()) {
-            throw new InventoryException("Stock movement is already reversed", 400);
-        }
-
-        stockMovement.setReversed(true);
-        stockMovement.setReversedBy(reversedBy);
-        stockMovement.setReversedDate(LocalDateTime.now());
-        stockMovement.setReversalReason(reason);
-
-        StockMovement savedMovement = stockMovementRepository.save(stockMovement);
-        return modelMapper.map(savedMovement, StockMovementDto.class);
-    }
 }
