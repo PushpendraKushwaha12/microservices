@@ -91,29 +91,4 @@ public class InventoryItemService implements InventoryItemServiceImpl {
         inventoryItemRepository.deleteById(id);
     }
 
-    @Override
-    public List<InventoryItemDto> getLowStockItems() {
-        return inventoryItemRepository.findLowStockItems().stream()
-                .map(item -> modelMapper.map(item, InventoryItemDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<InventoryItemDto> getOutOfStockItems() {
-        return inventoryItemRepository.findOutOfStockItems().stream()
-                .map(item -> modelMapper.map(item, InventoryItemDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public Long getTotalQuantityByProductId(Long productId) {
-        Long total = inventoryItemRepository.getTotalQuantityByProductId(productId);
-        return total != null ? total : 0L;
-    }
-
-    @Override
-    public Long getAvailableQuantityByProductId(Long productId) {
-        Long available = inventoryItemRepository.getAvailableQuantityByProductId(productId);
-        return available != null ? available : 0L;
-    }
 }

@@ -63,35 +63,4 @@ public class InventoryItemController {
                 .body(new APIResponse<>(HttpStatus.NO_CONTENT.value(), "Inventory item deleted successfully"));
     }
 
-    @GetMapping("/low-stock")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<APIResponse<List<InventoryItemDto>>> getLowStockItems() {
-        log.info("Fetching low stock items");
-        List<InventoryItemDto> items = inventoryItemService.getLowStockItems();
-        return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Low stock items fetched successfully", items));
-    }
-
-    @GetMapping("/out-of-stock")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<APIResponse<List<InventoryItemDto>>> getOutOfStockItems() {
-        log.info("Fetching out of stock items");
-        List<InventoryItemDto> items = inventoryItemService.getOutOfStockItems();
-        return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Out of stock items fetched successfully", items));
-    }
-
-    @GetMapping("/product/{productId}/total-quantity")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<APIResponse<Long>> getTotalQuantityByProductId(@PathVariable Long productId) {
-        log.info("Getting total quantity for product id: {}", productId);
-        Long totalQuantity = inventoryItemService.getTotalQuantityByProductId(productId);
-        return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Total quantity fetched successfully", totalQuantity));
-    }
-
-    @GetMapping("/product/{productId}/available-quantity")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<APIResponse<Long>> getAvailableQuantityByProductId(@PathVariable Long productId) {
-        log.info("Getting available quantity for product id: {}", productId);
-        Long availableQuantity = inventoryItemService.getAvailableQuantityByProductId(productId);
-        return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Available quantity fetched successfully", availableQuantity));
-    }
 }
