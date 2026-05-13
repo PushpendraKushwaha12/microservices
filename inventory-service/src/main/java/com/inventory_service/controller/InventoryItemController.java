@@ -22,7 +22,7 @@ public class InventoryItemController {
     private final InventoryItemService inventoryItemService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<InventoryItemDto>> createInventoryItem(@Valid @RequestBody InventoryItemDto inventoryItemDto) {
         log.info("Creating new inventory item for product: {}", inventoryItemDto.getProductName());
         InventoryItemDto createdItem = inventoryItemService.createInventoryItem(inventoryItemDto);
@@ -77,14 +77,6 @@ public class InventoryItemController {
         log.info("Fetching out of stock items");
         List<InventoryItemDto> items = inventoryItemService.getOutOfStockItems();
         return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Out of stock items fetched successfully", items));
-    }
-
-    @GetMapping("/search")
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<APIResponse<List<InventoryItemDto>>> searchInventoryItems(@RequestParam String keyword) {
-        log.info("Searching inventory items with keyword: {}", keyword);
-        List<InventoryItemDto> items = inventoryItemService.searchInventoryItems(keyword);
-        return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Inventory items searched successfully", items));
     }
 
     @GetMapping("/product/{productId}/total-quantity")

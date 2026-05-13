@@ -1,13 +1,10 @@
 package com.inventory_service.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum InventoryStatus {
-    AVAILABLE("Available"),
-    RESERVED("Reserved"),
-    ALLOCATED("Allocated"),
-    DAMAGED("Damaged"),
-    EXPIRED("Expired"),
-    QUARANTINE("Quarantine"),
-    OUT_OF_STOCK("Out of Stock");
+    AVAILABLE("Available");
 
     private final String displayName;
 
@@ -15,7 +12,4 @@ public enum InventoryStatus {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
 }

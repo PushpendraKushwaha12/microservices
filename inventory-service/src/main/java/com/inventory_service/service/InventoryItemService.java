@@ -23,7 +23,6 @@ public class InventoryItemService implements InventoryItemServiceImpl {
 
     @Override
     public InventoryItemDto createInventoryItem(InventoryItemDto inventoryItemDto) {
-        // Check if item already exists for this product and warehouse
         if (inventoryItemRepository.findByProductIdAndWarehouseId(
                 inventoryItemDto.getProductId(), inventoryItemDto.getWarehouseId()).isPresent()) {
             throw new InventoryException("Inventory item already exists for this product and warehouse", 409);
@@ -34,13 +33,10 @@ public class InventoryItemService implements InventoryItemServiceImpl {
         inventoryItem.setLastUpdatedDate(LocalDateTime.now());
         inventoryItem.setStatus(InventoryStatus.AVAILABLE);
         inventoryItem.setActive(true);
-
-        // Calculate available quantity
         inventoryItem.setAvailableQuantity(
             inventoryItem.getQuantity() - inventoryItem.getReservedQuantity() - inventoryItem.getAllocatedQuantity()
         );
 
-        // Calculate total value
         if (inventoryItem.getUnitCost() != null && inventoryItem.getQuantity() > 0) {
             inventoryItem.setTotalValue(inventoryItem.getUnitCost().multiply(
                 java.math.BigDecimal.valueOf(inventoryItem.getQuantity())));
@@ -74,12 +70,10 @@ public class InventoryItemService implements InventoryItemServiceImpl {
         updatedItem.setCreatedDate(existingItem.getCreatedDate());
         updatedItem.setLastUpdatedDate(LocalDateTime.now());
 
-        // Recalculate available quantity
         updatedItem.setAvailableQuantity(
             updatedItem.getQuantity() - updatedItem.getReservedQuantity() - updatedItem.getAllocatedQuantity()
         );
 
-        // Recalculate total value
         if (updatedItem.getUnitCost() != null && updatedItem.getQuantity() > 0) {
             updatedItem.setTotalValue(updatedItem.getUnitCost().multiply(
                 java.math.BigDecimal.valueOf(updatedItem.getQuantity())));
@@ -107,13 +101,6 @@ public class InventoryItemService implements InventoryItemServiceImpl {
     @Override
     public List<InventoryItemDto> getOutOfStockItems() {
         return inventoryItemRepository.findOutOfStockItems().stream()
-                .map(item -> modelMapper.map(item, InventoryItemDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<InventoryItemDto> searchInventoryItems(String keyword) {
-        return inventoryItemRepository.searchInventoryItems(keyword).stream()
                 .map(item -> modelMapper.map(item, InventoryItemDto.class))
                 .collect(Collectors.toList());
     }
