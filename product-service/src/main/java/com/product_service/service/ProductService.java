@@ -24,7 +24,6 @@ public class ProductService implements ProductServiceImpl {
 
     @Override
     public ProductDto createProduct(ProductDto productDto) {
-        // Check if SKU already exists
         if (productRepository.existsBySku(productDto.getSku())) {
             throw new ProductException("Product with SKU '" + productDto.getSku() + "' already exists", 409);
         }
@@ -58,7 +57,6 @@ public class ProductService implements ProductServiceImpl {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ProductException("Product not found with id: " + id, 404));
 
-        // Check if SKU is being changed and if it conflicts with another product
         if (!existingProduct.getSku().equals(productDto.getSku()) &&
             productRepository.existsBySku(productDto.getSku())) {
             throw new ProductException("Product with SKU '" + productDto.getSku() + "' already exists", 409);
@@ -79,11 +77,5 @@ public class ProductService implements ProductServiceImpl {
             throw new ProductException("Product not found with id: " + id, 404);
         }
         productRepository.deleteById(id);
-    }
-
-    // Custom repository method - we'll need to add this to the repository
-    private boolean existsBySku(String sku) {
-        return productRepository.findAll().stream()
-                .anyMatch(product -> product.getSku().equals(sku));
     }
 }

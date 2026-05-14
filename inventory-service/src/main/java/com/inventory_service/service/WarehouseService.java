@@ -22,7 +22,6 @@ public class WarehouseService implements WarehouseServiceImpl {
 
     @Override
     public WarehouseDto createWarehouse(WarehouseDto warehouseDto) {
-        // Check if warehouse code already exists
         if (warehouseRepository.findByWarehouseCode(warehouseDto.getWarehouseCode()).isPresent()) {
             throw new InventoryException("Warehouse with code '" + warehouseDto.getWarehouseCode() + "' already exists", 409);
         }
@@ -62,7 +61,6 @@ public class WarehouseService implements WarehouseServiceImpl {
         Warehouse existingWarehouse = warehouseRepository.findById(id)
                 .orElseThrow(() -> new InventoryException("Warehouse not found with id: " + id, 404));
 
-        // Check if warehouse code is being changed and if it conflicts with another warehouse
         if (!existingWarehouse.getWarehouseCode().equals(warehouseDto.getWarehouseCode()) &&
             warehouseRepository.findByWarehouseCode(warehouseDto.getWarehouseCode()).isPresent()) {
             throw new InventoryException("Warehouse with code '" + warehouseDto.getWarehouseCode() + "' already exists", 409);

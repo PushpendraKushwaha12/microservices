@@ -24,7 +24,7 @@ public class WarehouseController {
     private final WarehouseService warehouseService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<WarehouseDto>> createWarehouse(@Valid @RequestBody WarehouseDto warehouseDto) {
         log.info("Creating new warehouse: {}", warehouseDto.getWarehouseName());
         WarehouseDto createdWarehouse = warehouseService.createWarehouse(warehouseDto);
