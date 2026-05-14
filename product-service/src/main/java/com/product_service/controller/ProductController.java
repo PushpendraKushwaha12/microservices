@@ -3,6 +3,7 @@ package com.product_service.controller;
 import com.product_service.dto.ProductDto;
 import com.product_service.payload.response.APIResponse;
 import com.product_service.service.ProductService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +18,13 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 @Slf4j
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class ProductController {
 
     private final ProductService productService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<ProductDto>> createProduct(@Valid @RequestBody ProductDto productDto) {
         log.info("Creating new product: {}", productDto.getProductName());
         ProductDto createdProduct = productService.createProduct(productDto);

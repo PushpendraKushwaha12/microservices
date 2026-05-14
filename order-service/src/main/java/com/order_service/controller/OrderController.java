@@ -3,21 +3,27 @@ package com.order_service.controller;
 import com.order_service.dto.OrderDto;
 import com.order_service.payload.response.APIResponse;
 import com.order_service.service.impl.OrderService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.client.RestTemplate;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/orders")
 @Slf4j
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class OrderController {
+
+    @Autowired
+    RestTemplate restTemplate;
 
     private final OrderService orderService;
 
@@ -39,6 +45,7 @@ public class OrderController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<APIResponse<OrderDto>> getOrderById(@PathVariable Long id) {
         OrderDto order = orderService.getOrderById(id);
+        OrderDto response = restTemplate.getForObject("http://localhost:8081/api/v1/products/" + id, OrderDto.class);
         return ResponseEntity.ok(new APIResponse<>(HttpStatus.OK.value(), "Order fetched successfully", order));
     }
 

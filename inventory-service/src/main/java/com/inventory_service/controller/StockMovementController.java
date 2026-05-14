@@ -3,6 +3,7 @@ package com.inventory_service.controller;
 import com.inventory_service.dto.StockMovementDto;
 import com.inventory_service.payload.response.APIResponse;
 import com.inventory_service.service.StockMovementService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/v1/inventory/movements")
 @Slf4j
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class StockMovementController {
 
     private final StockMovementService stockMovementService;
