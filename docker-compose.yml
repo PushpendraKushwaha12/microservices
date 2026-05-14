@@ -51,5 +51,16 @@ services:
     networks:
       - microservices-network
 
+  inventory-service:
+    build: ./inventory-service
+    container_name: inventory-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - microservices-network
+
 networks:
   microservices-network:

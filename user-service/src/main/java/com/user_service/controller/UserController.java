@@ -8,6 +8,7 @@ import com.user_service.payload.response.APIResponse;
 import com.user_service.payload.response.AuthResponse;
 import com.user_service.payload.response.UserDto;
 import com.user_service.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import java.util.Optional;
 @RequestMapping("/api/users")
 @Slf4j
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
     private final UserService userService;
